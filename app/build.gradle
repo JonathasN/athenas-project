@@ -4,8 +4,8 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.athenas.am.athenas"
-        minSdkVersion 23
-        targetSdkVersion 28
+        minSdkVersion 21
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -32,6 +32,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
+    implementation 'com.github.eventtus:photo-editor-android:v1.0'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:gridlayout-v7:26.1.0'
+    implementation 'com.android.support:support-annotations:27.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -17,6 +17,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -24,7 +25,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -145,8 +145,8 @@ public class CameraActivity extends AppCompatActivity {
             //Check orientation base on device
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION,ORIENTATIONS.get(rotation));
-
-            file = new File(Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg");
+            String PathPhoto = Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg";
+            file = new File(PathPhoto);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader imageReader) {
@@ -212,6 +212,12 @@ public class CameraActivity extends AppCompatActivity {
                 }
             },mBackgroundHandler);
 
+            //PathPhoto
+            /*
+            Intent intent = new Intent(CameraActivity.this, PhotoEditorActivity.class);
+            intent.putExtra("selectedImagePath", PathPhoto);
+            startActivity(intent);
+            */
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
