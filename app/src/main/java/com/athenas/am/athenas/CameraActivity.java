@@ -2,6 +2,7 @@ package com.athenas.am.athenas;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -39,10 +40,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -67,10 +69,13 @@ public class CameraActivity extends AppCompatActivity {
 
     //Save to FILE
     private File file;
+    private String PathPhoto;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+
+    private static final String PHOTO_PATH = "PhotoEditor";
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -145,7 +150,11 @@ public class CameraActivity extends AppCompatActivity {
             //Check orientation base on device
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION,ORIENTATIONS.get(rotation));
-            String PathPhoto = Environment.getExternalStorageDirectory()+"/"+UUID.randomUUID().toString()+".jpg";
+            File mediaStorageDir = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), PHOTO_PATH);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            PathPhoto = mediaStorageDir.getPath() + File.separator
+                    + "IMG_" + timeStamp + ".jpg";
             file = new File(PathPhoto);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -193,6 +202,10 @@ public class CameraActivity extends AppCompatActivity {
                     super.onCaptureCompleted(session, request, result);
                     Toast.makeText(CameraActivity.this, "Saved "+file, Toast.LENGTH_SHORT).show();
                     createCameraPreview();
+
+                    Intent intent = new Intent(CameraActivity.this, PhotoEditorActivity.class);
+                    intent.putExtra("selectedImagePath", PathPhoto);
+                    startActivity(intent);
                 }
             };
 
@@ -212,12 +225,7 @@ public class CameraActivity extends AppCompatActivity {
                 }
             },mBackgroundHandler);
 
-            //PathPhoto
-            /*
-            Intent intent = new Intent(CameraActivity.this, PhotoEditorActivity.class);
-            intent.putExtra("selectedImagePath", PathPhoto);
-            startActivity(intent);
-            */
+
 
         } catch (CameraAccessException e) {
             e.printStackTrace();

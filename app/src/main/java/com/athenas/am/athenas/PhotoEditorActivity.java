@@ -185,6 +185,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             }
 
         }.start();
+
     }
 
     private boolean stringIsNotEmpty(String string) {
