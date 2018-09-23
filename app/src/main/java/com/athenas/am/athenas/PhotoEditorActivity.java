@@ -1,13 +1,20 @@
 package com.athenas.am.athenas;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.media.ExifInterface;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -32,8 +39,19 @@ import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
 import com.athenas.am.athenas.widget.SlidingUpPanelLayout;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.viewpagerindicator.PageIndicator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,17 +72,45 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     private ArrayList<Integer> colorPickerColors;
     private int colorCodeTextView = -1;
     private PhotoEditorSDK photoEditorSDK;
+    private ProgressDialog pd;
+
+    //creating reference to firebase storage
+    FirebaseStorage storage = FirebaseStorage.getInstance();
+    StorageReference storageRef = storage.getReferenceFromUrl("gs://app-samsung.appspot.com");    //change the url according to your firebase app
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_editor);
-
         String selectedImagePath = getIntent().getExtras().getString("selectedImagePath");
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 1;
         Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
+
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(selectedImagePath, bounds);
+
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        Bitmap bm = BitmapFactory.decodeFile(selectedImagePath, opts);
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(selectedImagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+        int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
+
+        int rotationAngle = 0;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+
+        Matrix matrix = new Matrix();
+        matrix.setRotate(90, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bm, 0, 0, bounds.outWidth, bounds.outHeight, matrix, true);
 
         Typeface newFont = Typeface.createFromAsset(getAssets(), "Eventtus-Icons.ttf");
         emojiFont = Typeface.createFromAsset(getAssets(), "emojione-android.ttf");
@@ -97,7 +143,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         ViewPager pager = (ViewPager) findViewById(R.id.image_emoji_view_pager);
         PageIndicator indicator = (PageIndicator) findViewById(R.id.image_emoji_indicator);
 
-        photoEditImageView.setImageBitmap(bitmap);
+        photoEditImageView.setImageBitmap(rotatedBitmap);
 
         closeTextView.setTypeface(newFont);
         addTextView.setTypeface(newFont);
@@ -174,6 +220,9 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         colorPickerColors.add(getResources().getColor(R.color.white));
         colorPickerColors.add(getResources().getColor(R.color.yellow_color_picker));
         colorPickerColors.add(getResources().getColor(R.color.yellow_green_color_picker));
+
+        pd = new ProgressDialog(this);
+        pd.setMessage("Uploading....");
 
         new CountDownTimer(500, 100) {
 
@@ -302,6 +351,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void returnBackWithSavedImage() {
+        pd.show();
         updateView(View.GONE);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -313,10 +363,23 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             }
 
             public void onFinish() {
+                pd.dismiss();
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String imageName = "IMG_" + timeStamp + ".jpg";
+                File mediaStorageDir = new File(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "PhotoEditor");
+                String PathPhoto = mediaStorageDir.getPath() + File.separator
+                        + "IMG_" + timeStamp + ".jpg";
+                String SavePath = photoEditorSDK.saveImage("PhotoEditorSDK", imageName);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("imagePath", photoEditorSDK.saveImage("PhotoEditorSDK", imageName));
+                returnIntent.putExtra("imagePath", SavePath);
+                //String image = getIntent().getExtras().getString("imagePath");
+                Uri file = Uri.fromFile(new File(SavePath));
+
+                StorageReference childRef = storageRef.child(file.getLastPathSegment());
+
+                //uploading the image
+                UploadTask uploadTask = childRef.putFile(file);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }

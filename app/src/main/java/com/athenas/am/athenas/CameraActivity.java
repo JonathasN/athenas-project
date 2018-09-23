@@ -1,11 +1,16 @@
 package com.athenas.am.athenas;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -15,17 +20,21 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -152,6 +161,13 @@ public class CameraActivity extends AppCompatActivity {
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION,ORIENTATIONS.get(rotation));
             File mediaStorageDir = new File(
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), PHOTO_PATH);
+
+            if (! mediaStorageDir.exists()){
+                if (! mediaStorageDir.mkdirs()){
+                    Log.d("MyCameraApp", "failed to create directory");
+                }
+            }
+
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             PathPhoto = mediaStorageDir.getPath() + File.separator
                     + "IMG_" + timeStamp + ".jpg";
@@ -183,9 +199,30 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     }
                 }
+
                 private void save(byte[] bytes) throws IOException {
                     OutputStream outputStream = null;
                     try{
+                        /*
+                        BitmapFactory.Options bounds = new BitmapFactory.Options();
+                        bounds.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(PathPhoto, bounds);
+
+                        BitmapFactory.Options opts = new BitmapFactory.Options();
+                        Bitmap bm = BitmapFactory.decodeFile(PathPhoto, opts);
+                        ExifInterface exif = new ExifInterface(PathPhoto);
+                        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+                        int orientation = orientString != null ? Integer.parseInt(orientString) :  ExifInterface.ORIENTATION_NORMAL;
+
+                        int rotationAngle = 0;
+                        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
+                        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
+                        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
+
+                        Matrix matrix = new Matrix();
+                        matrix.setRotate(rotationAngle, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+                        Bitmap rotatedBitmap = Bitmap.createBitmap(bm, 0, 0, bounds.outWidth, bounds.outHeight, matrix, true);*/
+                        Uri.fromFile(file);
                         outputStream = new FileOutputStream(file);
                         outputStream.write(bytes);
                     }finally {
