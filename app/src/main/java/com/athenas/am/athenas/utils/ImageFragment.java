@@ -1,4 +1,4 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.utils;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.athenas.am.athenas.R;
+import com.athenas.am.athenas.activity.PhotoEditorActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -23,7 +26,7 @@ public class ImageFragment extends Fragment implements ImageAdapter.OnImageClick
 
     private ArrayList<Bitmap> stickerBitmaps;
     private PhotoEditorActivity photoEditorActivity;
-    RecyclerView imageRecyclerView;
+    public RecyclerView imageRecyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

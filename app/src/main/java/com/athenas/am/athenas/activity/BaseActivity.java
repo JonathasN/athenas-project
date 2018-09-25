@@ -1,4 +1,4 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.activity;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -19,6 +19,9 @@ import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.athenas.am.athenas.utils.GalleryUtils;
+import com.athenas.am.athenas.R;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

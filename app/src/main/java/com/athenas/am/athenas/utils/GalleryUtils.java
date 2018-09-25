@@ -1,4 +1,4 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.utils;
 
 import android.content.Context;
 import android.database.Cursor;

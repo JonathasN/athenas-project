@@ -1,10 +1,12 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
+
+import com.athenas.am.athenas.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             //@TODO - CRIAR CLASSES E AJUSTAR O SWITCH - AJUSTAR O CICLO DE VIDA DA ACTIVITY
             case R.id.image_card: i = new Intent(this, CameraActivity.class); startActivity(i); break;
-            case R.id.audio_card: i = new Intent(this, MediaActivity.class); startActivity(i); break;
-            case R.id.notebook_card: i = new Intent(this, CameraActivity.class); startActivity(i); break;
+            case R.id.audio_card: i = new Intent(this, CameraActivity.class); startActivity(i); break;
+            case R.id.notebook_card: i = new Intent(this, ListNotebooksActivity.class); startActivity(i); break;
             default: break;
         }
     }

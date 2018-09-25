@@ -1,4 +1,4 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.utils;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.athenas.am.athenas.R;
+import com.athenas.am.athenas.activity.PhotoEditorActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +23,7 @@ public class EmojiFragment extends Fragment implements EmojiAdapter.OnEmojiClick
 
     private ArrayList<String> emojiIds;
     private PhotoEditorActivity photoEditorActivity;
-    RecyclerView emojiRecyclerView;
+    public RecyclerView emojiRecyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

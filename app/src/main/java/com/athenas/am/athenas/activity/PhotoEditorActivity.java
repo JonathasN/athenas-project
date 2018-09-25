@@ -1,4 +1,4 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,12 +9,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -38,20 +36,18 @@ import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
 import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
+import com.athenas.am.athenas.utils.ColorPickerAdapter;
+import com.athenas.am.athenas.utils.EmojiFragment;
+import com.athenas.am.athenas.utils.ImageFragment;
+import com.athenas.am.athenas.R;
 import com.athenas.am.athenas.widget.SlidingUpPanelLayout;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.viewpagerindicator.PageIndicator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -354,7 +350,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         pd.show();
         updateView(View.GONE);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentImageRelativeLayout.setLayoutParams(layoutParams);
         new CountDownTimer(1000, 500) {
@@ -363,7 +359,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
             }
 
             public void onFinish() {
-                pd.dismiss();
+
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 String imageName = "IMG_" + timeStamp + ".jpg";
                 File mediaStorageDir = new File(
@@ -380,6 +376,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
 
                 //uploading the image
                 UploadTask uploadTask = childRef.putFile(file);
+                pd.dismiss();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }

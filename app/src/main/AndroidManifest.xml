@@ -14,21 +14,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CameraActivity"></activity>
+        <activity android:name=".activity.CameraActivity" />
         <activity
-            android:name=".PhotoEditorActivity"
+            android:name=".activity.PhotoEditorActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_photo_editor"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity android:name=".audio" />
+        <activity android:name=".activity_list_notebooks" />
+        <activity android:name=".activity.NotebookActivity"></activity>
     </application>
 
 </manifest>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.athenas.am.athenas.PhotoEditorActivity">
+    tools:context="com.athenas.am.athenas.activity.PhotoEditorActivity">
 
     <com.athenas.am.athenas.widget.SlidingUpPanelLayout
         android:id="@+id/sliding_layout"

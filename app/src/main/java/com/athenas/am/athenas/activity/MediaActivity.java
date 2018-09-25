@@ -1,4 +1,4 @@
-package com.athenas.am.athenas;
+package com.athenas.am.athenas.activity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -7,6 +7,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+
+import com.athenas.am.athenas.R;
+import com.athenas.am.athenas.utils.UtilFunctions;
 
 public abstract class MediaActivity extends BaseActivity {
 
