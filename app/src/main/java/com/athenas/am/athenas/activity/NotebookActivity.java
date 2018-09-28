@@ -109,7 +109,7 @@ public class NotebookActivity extends AppCompatActivity {
             return;
         }
         CollectionReference notebookRef = FirebaseFirestore.getInstance().collection("Notebook");
-        notebookRef.add(new Note(title, description, hourInit, hourEnd, day, priority));
+        notebookRef.document(title).set(new Note(title, description, hourInit, hourEnd, day, priority));
         Toast.makeText(this, "Caderno Criado", Toast.LENGTH_SHORT).show();
         finish();
     }
