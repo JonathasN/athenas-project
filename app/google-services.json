@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "561752428593",
+    "firebase_url": "https://app-samsung.firebaseio.com",
+    "project_id": "app-samsung",
+    "storage_bucket": "app-samsung.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561752428593:android:b156e68794fb2a0c",
+        "android_client_info": {
+          "package_name": "com.athenas.am.athenas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561752428593-7b0bcrkl3k970tjlgag6j180qr46lcob.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.athenas.am.athenas",
+            "certificate_hash": "311bb538873580e8ec56479f2d0cff85fd31a5aa"
+          }
+        },
+        {
+          "client_id": "561752428593-hfomndrj5cuhv6c8ob0nsv0veo7t1oau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU4PhO10BcwaX-O3rHJNJUnmwVO_FvhUE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561752428593-hfomndrj5cuhv6c8ob0nsv0veo7t1oau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
