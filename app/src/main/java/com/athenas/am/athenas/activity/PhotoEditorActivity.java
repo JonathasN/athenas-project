@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -31,16 +32,25 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ahmedadeltito.photoeditorsdk.BrushDrawingView;
 import com.ahmedadeltito.photoeditorsdk.OnPhotoEditorSDKListener;
 import com.ahmedadeltito.photoeditorsdk.PhotoEditorSDK;
 import com.ahmedadeltito.photoeditorsdk.ViewType;
+import com.athenas.am.athenas.classes.Image;
 import com.athenas.am.athenas.utils.ColorPickerAdapter;
 import com.athenas.am.athenas.utils.EmojiFragment;
 import com.athenas.am.athenas.utils.ImageFragment;
 import com.athenas.am.athenas.R;
 import com.athenas.am.athenas.widget.SlidingUpPanelLayout;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -73,12 +83,21 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
     //creating reference to firebase storage
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReferenceFromUrl("gs://app-samsung.appspot.com");    //change the url according to your firebase app
+    private Uri downloadUri;
+    private String notebookId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_editor);
         String selectedImagePath = getIntent().getExtras().getString("selectedImagePath");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            notebookId = extras.getString("NotebookId");
+            //Log.d("NotebookID", notebookId);
+            //The key argument here must match that used in the other activity
+        }
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 1;
@@ -350,7 +369,7 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
         pd.show();
         updateView(View.GONE);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-        RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         parentImageRelativeLayout.setLayoutParams(layoutParams);
         new CountDownTimer(1000, 500) {
@@ -372,10 +391,49 @@ public class PhotoEditorActivity extends AppCompatActivity implements View.OnCli
                 //String image = getIntent().getExtras().getString("imagePath");
                 Uri file = Uri.fromFile(new File(SavePath));
 
-                StorageReference childRef = storageRef.child(file.getLastPathSegment());
+                final StorageReference childRef = storageRef.child(file.getLastPathSegment());
 
                 //uploading the image
                 UploadTask uploadTask = childRef.putFile(file);
+
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return childRef.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            downloadUri = task.getResult();
+                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                            if(notebookId == null){
+                                storageRef = storage.getReferenceFromUrl("gs://app-samsung.appspot.com/PodeSerUtil");
+
+                                CollectionReference notebookRef = FirebaseFirestore.getInstance().collection("Notebook").document("Pode Ser Util")
+                                        .collection("Imagem");
+                                Image imagemDoc = new Image("IMG_" + timeStamp + ".jpg",  downloadUri.toString(), "PodeSerUtil");
+                                notebookRef.document("IMG_"+timeStamp).set(imagemDoc);
+                            }else{
+                                storageRef = storage.getReferenceFromUrl("gs://app-samsung.appspot.com/"+notebookId);
+
+                                CollectionReference notebookRef = FirebaseFirestore.getInstance().collection("Notebook").document(notebookId).collection("Imagem");
+                                Image imagemDoc = new Image("IMG_" + timeStamp + ".jpg",  downloadUri.toString(), notebookId);
+                                notebookRef.document("IMG_"+timeStamp).set(imagemDoc);
+                            }
+                        } else {
+                            // Handle failures
+                            // ...
+                            Log.d("Message","Não fez download");
+                        }
+                    }
+                });
+
                 pd.dismiss();
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();

@@ -38,31 +38,35 @@
 
     <EditText
         android:id="@+id/edit_text_hour_init"
-        android:layout_width="265dp"
+        android:layout_width="132dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="52dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_style"
         android:hint="Hr Inicio"
         android:inputType="time"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintBottom_toTopOf="@+id/edit_text_day"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_Description"
-        tools:ignore="MissingConstraints"/>
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/edit_text_hour_end"
-        android:layout_width="265dp"
+        android:layout_width="132dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_style"
         android:hint="Hr Fim"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_hour_init"
-        tools:ignore="MissingConstraints"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/edit_text_hour_init"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_Description"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/edit_text_day"
@@ -71,6 +75,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:hint="Dia da Aula"
+        android:background="@drawable/edit_text_style"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"

@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.eventtus:photo-editor-android-v1.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/photo-editor-android-v1.0.aar/4aa402d70178cae8900ae3f61653b47b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/photo-editor-android-v1.0.aar/4aa402d70178cae8900ae3f61653b47b/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/photo-editor-android-v1.0.aar/3474b0b8e6d8ed8bce440a77ef9effe0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/photo-editor-android-v1.0.aar/3474b0b8e6d8ed8bce440a77ef9effe0/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

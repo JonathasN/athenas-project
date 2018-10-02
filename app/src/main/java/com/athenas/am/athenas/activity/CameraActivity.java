@@ -79,6 +79,7 @@ public class CameraActivity extends AppCompatActivity {
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
 
+    private String notebookId;
     private static final String PHOTO_PATH = "PhotoEditor";
 
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -107,6 +108,13 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            notebookId = extras.getString("NotebookId");
+            Log.d("Message", "NotebookID"+notebookId);
+            //The key argument here must match that used in the other activity
+        }
 
         textureView = (TextureView)findViewById(R.id.textureView);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
@@ -237,6 +245,9 @@ public class CameraActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(CameraActivity.this, PhotoEditorActivity.class);
                     intent.putExtra("selectedImagePath", PathPhoto);
+                    if(notebookId != null){
+                        intent.putExtra("NotebookId", notebookId);
+                    }
                     startActivity(intent);
                 }
             };

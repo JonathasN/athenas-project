@@ -1,9 +1,9 @@
 package com.athenas.am.athenas.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -12,7 +12,6 @@ import android.view.View;
 import com.athenas.am.athenas.R;
 import com.athenas.am.athenas.classes.Note;
 import com.athenas.am.athenas.utils.NoteAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -74,7 +73,11 @@ public class ListNotebooksActivity extends AppCompatActivity {
                 Note note = documentSnapshot.toObject(Note.class);
                 String id = documentSnapshot.getId();
                 String path = documentSnapshot.getReference().getPath();
-                startActivity(new Intent(ListNotebooksActivity.this, NotebookActivity.class));
+                //Intent intent = new Intent(ListNotebooksActivity.this, CameraActivity.class);
+                Intent intent = new Intent(ListNotebooksActivity.this, ResponseActivity.class);
+                intent.putExtra("notebookId", id);
+                startActivity(intent);
+                //startActivity(new Intent(ListNotebooksActivity.this, NotebookActivity.class));
             }
         });
     }
